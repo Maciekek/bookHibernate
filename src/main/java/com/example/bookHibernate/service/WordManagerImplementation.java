@@ -1,5 +1,6 @@
 package com.example.bookHibernate.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.bookHibernate.domain.PartOfSpeech;
 import com.example.bookHibernate.domain.Word;
 
 @Component
@@ -36,10 +38,11 @@ public class WordManagerImplementation implements WordManager {
 				.list();
 	}
 
-	public Word findWordByMianownik(String mianownik) {
-		return (Word) sessionFactory.getCurrentSession()
+	@SuppressWarnings("unchecked")
+	public List<Word> findWordByMianownik(String mianownik) {
+		return (List<Word>) sessionFactory.getCurrentSession()
 				.getNamedQuery("word.byMianownik")
-				.setString("mianownik", mianownik).uniqueResult();
+				.setString("mianownik", mianownik).list();
 
 	}
 
@@ -75,9 +78,79 @@ public class WordManagerImplementation implements WordManager {
 	}
 
 	public void updateByID(Word word) {
-		
-		
+
 		sessionFactory.getCurrentSession().update(word);
+	}
+
+	public Long addPartOfSpeech(PartOfSpeech pos) {
+		pos.setId(null);
+		return (Long) sessionFactory.getCurrentSession().save(pos);
+
+	}
+
+	public PartOfSpeech findPosById(Long id) {
+
+		return (PartOfSpeech) sessionFactory.getCurrentSession().get(
+				PartOfSpeech.class, id);
+	}
+
+	public void makeRelation(Long wordId, Long posId) {
+		Word word = (Word) sessionFactory.getCurrentSession().get(Word.class,
+				wordId);
+		PartOfSpeech pos = (PartOfSpeech) sessionFactory.getCurrentSession()
+				.get(PartOfSpeech.class, posId);
+
+		word.getPos().add(pos);
+	}
+
+	public List<PartOfSpeech> getWordFromPartOfSpeech(Word word) {
+		List<PartOfSpeech> poses = new ArrayList<PartOfSpeech>(word.getPos());
+		return poses;
+	}
+
+	public PartOfSpeech getPartOfSpeechById(PartOfSpeech pos) {
+		return (PartOfSpeech) sessionFactory.getCurrentSession()
+				.getNamedQuery("partOfSpeech.byId").setLong("id", pos.getId())
+				.uniqueResult();
+
+	}
+
+	public void updatePartOfSpeech(PartOfSpeech pos) {
+		sessionFactory.getCurrentSession().update(pos);
+		
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<PartOfSpeech> getAllPartOfSpeech() {
+		return sessionFactory.getCurrentSession().getNamedQuery("partOfSpeech.all").list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<PartOfSpeech> getPartOfSpeechByRzeczownik(String rzeczownik) {
+		return  (List<PartOfSpeech>) sessionFactory.getCurrentSession()
+				.getNamedQuery("partOfSpeech.byRzeczownik")
+				.setString("rzeczownik", rzeczownik).list();
+
+	}
+
+	public void deletePartOfSpeechById(PartOfSpeech partOfSpeech) {
+		sessionFactory.getCurrentSession().delete(partOfSpeech);
+		
+	}
+
+	public void deleteWordWithAllPartOfSpeech(Word word) {
+		List<PartOfSpeech> allPoses = getAllPartOfSpeech();
+		
+		for (PartOfSpeech pos : allPoses) {
+			for (PartOfSpeech singlePos : word.getPos())
+				if (singlePos.getId().equals(pos.getId())){
+					sessionFactory.getCurrentSession().delete(pos);
+				}
+		}
+		
+		
+		word.getPos().clear();
+		
 	}
 
 }
