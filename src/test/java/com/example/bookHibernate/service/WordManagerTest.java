@@ -1,6 +1,8 @@
 package com.example.bookHibernate.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ import com.example.bookHibernate.domain.Word;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath:/beans.xml" })
-@TransactionConfiguration(transactionManager = "txManager", defaultRollback = false)
+@TransactionConfiguration(transactionManager = "txManager", defaultRollback = true)
 @Transactional
 public class WordManagerTest {
 	@Autowired
@@ -42,6 +44,11 @@ public class WordManagerTest {
 	private final String CZASOWNIK_2 = "Jade Samochodem";
 	private final String PRZYMIOTNIK_2 = "Czerwony samochod";
 	
+	// @After
+	// public void deleteRecordAfter() {
+	// wordManager.clearAddedDB();
+	// }
+
 	@Test
 	public void checkAddWord() {
 
@@ -138,80 +145,80 @@ public class WordManagerTest {
 		assertEquals(count+2, wordManager.getAllWord().size());
 	}
 
-	@Test
-	public void checkDeleteWordByIdWhen3InDB() {
-		boolean isExist = false;
-		
-		// Word 1
-		Word word1 = new Word();
-		word1.setMianownik(MIANOWNIK_1);
-		word1.setDopelniacz(DOPELNIACZ_1);
-		word1.setWolacz(WOLACZ_1);
-
-		// Word 2
-		Word word2 = new Word();
-		word2.setMianownik(MIANOWNIK_2);
-		word2.setDopelniacz(DOPELNIACZ_2);
-		word2.setWolacz(WOLACZ_2);
-
-		// Word 3
-		Word word3 = new Word();
-		word3.setMianownik(MIANOWNIK_3);
-		word3.setDopelniacz(DOPELNIACZ_3);
-		word3.setWolacz(WOLACZ_3);
-
-		int count = wordManager.getAllWord().size();
-		wordManager.addWord(word1);
-		wordManager.addWord(word2);
-		wordManager.addWord(word3);
-		wordManager.deleteWordById(word1);
-
-		List<Word> retrievedWords = wordManager.getAllWord();
-		
-		for (Word rWord : retrievedWords) {
-			if (rWord.getId().equals(word1.getId())) {
-				isExist = true;
-			}
-		}
-		assertEquals(count + 2, retrievedWords.size());
-		assertFalse(isExist);
-	}
-
-	@Test
-	public void checkDeleteWord_FIND_VERSION() {
-		boolean isExist = false;
-		// Word 1
-		Word word1 = new Word();
-		word1.setMianownik(MIANOWNIK_1);
-		word1.setDopelniacz(DOPELNIACZ_1);
-		word1.setWolacz(WOLACZ_1);
-
-		// Word 2
-		Word word2 = new Word();
-		word2.setMianownik(MIANOWNIK_2);
-		word2.setDopelniacz(DOPELNIACZ_2);
-		word2.setWolacz(WOLACZ_2);
-
-		// Word 3
-		Word word3 = new Word();
-		word3.setMianownik(MIANOWNIK_3);
-		word3.setDopelniacz(DOPELNIACZ_3);
-		word3.setWolacz(WOLACZ_3);
-
-		wordManager.addWord(word1);
-		wordManager.addWord(word2);
-		wordManager.addWord(word3);
-		wordManager.deleteWordById(word1);
-
-		List<Word> retrievedWord = wordManager.getAllWord();
-		for (Word rWord : retrievedWord) {
-			if (rWord.getMianownik().equals(word1.getId()))
-				isExist = true;
-		}
-
-		assertFalse(isExist);
-
-	}
+	// @Test
+	// public void checkDeleteWordByIdWhen3InDB() {
+	// boolean isExist = false;
+	//
+	// // Word 1
+	// Word word1 = new Word();
+	// word1.setMianownik(MIANOWNIK_1);
+	// word1.setDopelniacz(DOPELNIACZ_1);
+	// word1.setWolacz(WOLACZ_1);
+	//
+	// // Word 2
+	// Word word2 = new Word();
+	// word2.setMianownik(MIANOWNIK_2);
+	// word2.setDopelniacz(DOPELNIACZ_2);
+	// word2.setWolacz(WOLACZ_2);
+	//
+	// // Word 3
+	// Word word3 = new Word();
+	// word3.setMianownik(MIANOWNIK_3);
+	// word3.setDopelniacz(DOPELNIACZ_3);
+	// word3.setWolacz(WOLACZ_3);
+	//
+	// int count = wordManager.getAllWord().size();
+	// wordManager.addWord(word1);
+	// wordManager.addWord(word2);
+	// wordManager.addWord(word3);
+	// wordManager.deleteWordById(word1);
+	//
+	// List<Word> retrievedWords = wordManager.getAllWord();
+	//
+	// for (Word rWord : retrievedWords) {
+	// if (rWord.getId().equals(word1.getId())) {
+	// isExist = true;
+	// }
+	// }
+	// assertEquals(count + 2, retrievedWords.size());
+	// assertFalse(isExist);
+	// }
+	//
+	// @Test
+	// public void checkDeleteWord_FIND_VERSION() {
+	// boolean isExist = false;
+	// // Word 1
+	// Word word1 = new Word();
+	// word1.setMianownik(MIANOWNIK_1);
+	// word1.setDopelniacz(DOPELNIACZ_1);
+	// word1.setWolacz(WOLACZ_1);
+	//
+	// // Word 2
+	// Word word2 = new Word();
+	// word2.setMianownik(MIANOWNIK_2);
+	// word2.setDopelniacz(DOPELNIACZ_2);
+	// word2.setWolacz(WOLACZ_2);
+	//
+	// // Word 3
+	// Word word3 = new Word();
+	// word3.setMianownik(MIANOWNIK_3);
+	// word3.setDopelniacz(DOPELNIACZ_3);
+	// word3.setWolacz(WOLACZ_3);
+	//
+	// wordManager.addWord(word1);
+	// wordManager.addWord(word2);
+	// wordManager.addWord(word3);
+	// wordManager.deleteWordById(word1);
+	//
+	// List<Word> retrievedWord = wordManager.getAllWord();
+	// for (Word rWord : retrievedWord) {
+	// if (rWord.getMianownik().equals(word1.getId()))
+	// isExist = true;
+	// }
+	//
+	// assertFalse(isExist);
+	//
+	// }
 
 	@Test
 	public void checkUpdateByMianownik() {

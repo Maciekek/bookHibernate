@@ -27,5 +27,6 @@ public interface WordManager {
 	List<PartOfSpeech> getPartOfSpeechByRzeczownik(String rzeczownik);
 	void deletePartOfSpeechById(PartOfSpeech partOfSpeech);
 	void deleteWordWithAllPartOfSpeech(Word word);
-	
+
+	void clearAddedDB();
 }

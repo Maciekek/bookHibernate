@@ -15,6 +15,8 @@ import com.example.bookHibernate.domain.Word;
 @Transactional
 public class WordManagerImplementation implements WordManager {
 
+	List<Word> wordsAdded = new ArrayList<Word>();
+
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -29,7 +31,7 @@ public class WordManagerImplementation implements WordManager {
 	public void addWord(Word word) {
 		word.setId(null);
 		sessionFactory.getCurrentSession().persist(word);
-
+		wordsAdded.add(word);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -153,4 +155,14 @@ public class WordManagerImplementation implements WordManager {
 		
 	}
 
+	public void clearAddedDB() {
+		for (Word wordAdded : wordsAdded) {
+			try {
+				deleteWordById(wordAdded);
+			} catch (Exception e) {
+				System.out.println(e);
+			}
+		}
+		wordsAdded.clear();
+	}
 }
